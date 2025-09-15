@@ -57,7 +57,7 @@ usage() {
 }
 
 if [ $# -eq 0 ]; then
-    CGO_ENABLED=0  go build -trimpath -buildvcs=false -o ./bin/VPSWatchDog ./            
+    CGO_ENABLED=0  go build -trimpath -buildvcs=false -o ./bin/VPSWatchDog ./cmd/            
 elif [ $# -eq 1 ] && [ "$1" = "all" ]; then
     build_all
 else
