@@ -55,7 +55,7 @@ Run the watchdog with appropriate flags:
 
 ## Requirements
 
-* Go 1.18+
+* Go 1.24.5+ (Only to build otherwise binaries in the release section are static and can run without go being installed)
 * SMTP credentials with permission to send email
 
 ## License
