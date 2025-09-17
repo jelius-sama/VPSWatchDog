@@ -17,8 +17,8 @@ Clone the repository and build the binary or download any of the prebuilt binari
 
 ```bash
 git clone https://github.com/jelius-sama/VPSWatchDog.git
-cd StorageWatchDog
-CGO_ENABLED=0 go build -trimpath -buildvcs=false -o ./VPSWatchDog ./cmd/
+cd VPSWatchDog
+./build.sh
 ```
 
 ## Usage
@@ -50,8 +50,8 @@ Run the watchdog with appropriate flags:
 
 1. On startup, a test email is sent to verify SMTP configuration.
 2. On startup, each system stat watcher reports an initial reading via email.
-2. The service checks system usage at the configured interval (configurable in ./cmd/main.go).
-3. If usage exceeds a threshold, an email alert is sent.
+3. The service checks system usage at the configured interval (configurable in ./cmd/main.go).
+4. If usage exceeds a threshold, an email alert is sent.
 
 ## Requirements
 
