@@ -1,5 +1,7 @@
 # VPS Watchdog
 
+![VPSWatchDog](https://jelius.dev/assets/VPSWatchDog.png)
+
 A lightweight Go service that monitors your VPS stats and sends alert emails when usage thresholds are reached.  
 
 ## Features
