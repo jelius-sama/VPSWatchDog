@@ -29,6 +29,20 @@ func main() {
 	mailFrom := flag.String("from", "alert@example.com", "From email")
 	mailTo := flag.String("to", "admin@example.com", "To email")
 
+	// Intelligence config
+	useIntelligent := flag.Bool("intelligent", true, "Use intelligent monitoring (default: true)")
+	learningDuration := flag.String("learningDuration", "168h", "Duration for learning phase (e.g., 168h = 7 days)")
+	baselinePath := flag.String("baselinePath", "./data/baselines", "Path to store baseline data")
+	maxAlertsPerHour := flag.Int("maxAlertsPerHour", 2, "Maximum alerts per hour per monitor")
+
+	// Polling intervals
+	cpuInterval := flag.Duration("cpuInterval", 5*time.Second, "CPU polling interval")
+	memInterval := flag.Duration("memInterval", 10*time.Second, "Memory polling interval")
+	diskInterval := flag.Duration("diskInterval", 30*time.Second, "Disk polling interval")
+	netInterval := flag.Duration("netInterval", 15*time.Second, "Network polling interval")
+	swapInterval := flag.Duration("swapInterval", 20*time.Second, "Swap polling interval")
+	loadInterval := flag.Duration("loadInterval", 20*time.Second, "Load polling interval")
+
 	flag.Parse()
 
 	vars.InitMailVars(vars.MailVars{
@@ -46,13 +60,50 @@ func main() {
 
 	logger.Okay("SMTP test succeeded: test mail sent")
 
-	// Start polling every 5 seconds
-	watcher.StartCPUPoller(5 * time.Second)
-	watcher.StartMemPoller(10 * time.Second)
-	watcher.StartDiskPoller(30 * time.Second)
-	watcher.StartNetPoller(15 * time.Second)
-	watcher.StartSwapPoller(20 * time.Second)
-	watcher.StartLoadPoller(20 * time.Second)
+	// Parse learning duration
+	learnDuration, err := time.ParseDuration(*learningDuration)
+	if err != nil {
+		logger.Panic("Invalid learningDuration format:", err)
+	}
+
+	// Start monitoring based on mode
+	if *useIntelligent {
+		logger.Info("🧠 Starting Intelligent Monitoring System")
+		logger.Info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+		logger.Info("Configuration:")
+		logger.Info("  Learning Duration:", learnDuration)
+		logger.Info("  Baseline Path:", *baselinePath)
+		logger.Info("  Max Alerts/Hour:", *maxAlertsPerHour)
+		logger.Info("  CPU Interval:", *cpuInterval)
+
+		// Start intelligent CPU monitoring
+		watcher.StartIntelligentCPUPoller(
+			*cpuInterval,
+			*baselinePath,
+			learnDuration,
+			*maxAlertsPerHour,
+		)
+
+		// TODO: Implement intelligent versions for other monitors
+		// For now, keep using the old monitors for other metrics
+		watcher.StartMemPoller(*memInterval)
+		watcher.StartDiskPoller(*diskInterval)
+		watcher.StartNetPoller(*netInterval)
+		watcher.StartSwapPoller(*swapInterval)
+		watcher.StartLoadPoller(*loadInterval)
+	} else {
+		logger.Info("📊 Starting Legacy Monitoring System")
+
+		// Use old threshold-based monitoring
+		watcher.StartCPUPoller(*cpuInterval)
+		watcher.StartMemPoller(*memInterval)
+		watcher.StartDiskPoller(*diskInterval)
+		watcher.StartNetPoller(*netInterval)
+		watcher.StartSwapPoller(*swapInterval)
+		watcher.StartLoadPoller(*loadInterval)
+	}
+
+	logger.Okay("All monitors started successfully")
 
 	// Keep program alive
 	select {}
