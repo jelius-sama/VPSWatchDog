@@ -2,6 +2,7 @@ package baseline
 
 import (
 	"encoding/json"
+	"fmt"
 	"math"
 	"sync"
 	"time"
@@ -164,7 +165,7 @@ func (b *CPUBaseline) IsAnomalous(currentUsage float64) (bool, float64, string) 
 
 	now := time.Now()
 	hour := now.Hour()
-	expected := b.GetExpectedUsage(hour)
+	// expected := b.GetExpectedUsage(hour)
 	deviation := b.CalculateDeviation(currentUsage, hour)
 	isPeak := b.IsPeakHour(hour)
 
@@ -241,8 +242,8 @@ func (b *CPUBaseline) GetSummary() string {
 	if b.IsLearning {
 		elapsed := time.Since(b.LearningStarted)
 		remaining := b.LearningDuration - elapsed
-		return "Learning mode - " + remaining.String() + " remaining"
+		return fmt.Sprintf("Learning mode - %s remaining", remaining)
 	}
 
-	return "Monitoring active - " + string(rune(len(b.PeakHours))) + " peak hours identified"
+	return fmt.Sprintf("Monitoring active - %d peak hours identified", len(b.PeakHours))
 }

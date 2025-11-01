@@ -95,7 +95,7 @@ func main() {
 		logger.Info("📊 Starting Legacy Monitoring System")
 
 		// Use old threshold-based monitoring
-		watcher.StartCPUPoller(*cpuInterval)
+		watcher.GetCPUIntelligenceStatus()
 		watcher.StartMemPoller(*memInterval)
 		watcher.StartDiskPoller(*diskInterval)
 		watcher.StartNetPoller(*netInterval)

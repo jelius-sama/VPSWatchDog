@@ -155,18 +155,29 @@ func (c *CPUIntelligence) ProcessUsage(usage float64) (bool, string, error) {
 		peakStr = "peak"
 	}
 
-	message := "CPU Usage Anomaly Detected\n" +
-		"----------------------------\n" +
-		AlertLevelToString(level) + " Alert\n\n" +
-		description + "\n\n" +
-		"Details:\n" +
-		"  Current Usage: " + formatFloat(usage) + "%\n" +
-		"  Expected Usage: " + formatFloat(expected) + "%\n" +
-		"  Deviation: " + formatFloat(deviation) + "%\n" +
-		"  Hour: " + formatInt(hour) + ":00 (" + peakStr + ")\n" +
-		"  Alert Count: " + formatInt(c.AlertState.AlertCount) + "/" +
-		formatInt(c.AlertState.MaxAlertsPerHour) + " this hour\n\n" +
-		"Reason: " + reason
+	message := fmt.Sprintf(
+		"CPU Usage Anomaly Detected\n"+
+			"----------------------------\n"+
+			"%s Alert\n\n"+
+			"%s\n\n"+
+			"Details:\n"+
+			"  Current Usage: %.2f%%\n"+
+			"  Expected Usage: %.2f%%\n"+
+			"  Deviation: %.2f%%\n"+
+			"  Hour: %d:00 (%s)\n"+
+			"  Alert Count: %d/%d this hour\n\n"+
+			"Reason: %s",
+		AlertLevelToString(level),
+		description,
+		usage,
+		expected,
+		deviation,
+		hour,
+		peakStr,
+		c.AlertState.AlertCount,
+		c.AlertState.MaxAlertsPerHour,
+		reason,
+	)
 
 	return true, message, nil
 }
